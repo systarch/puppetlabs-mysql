@@ -3,8 +3,32 @@ class Puppet::Provider::Mysql < Puppet::Provider
   # Without initvars commands won't work.
   initvars
 
-  # Make sure we find mysql commands on CentOS and FreeBSD
-  ENV['PATH'] = ENV['PATH'] + ':/usr/libexec:/usr/local/libexec:/usr/local/bin'
+  ENV['PATH'] = [
+      ENV['PATH'],
+      # Make sure we find mysql commands on CentOS and FreeBSD
+      '/usr/libexec',
+      '/usr/local/libexec',
+      '/usr/local/bin',
+      # Make sure we find mysqld on CentOS and mysql_install_db on Gentoo and Solaris 11
+      '/usr/share/mysql/scripts',
+      '/opt/rh/rh-mysql57/root/usr/bin',
+      '/opt/rh/rh-mysql57/root/usr/libexec',
+      '/opt/rh/rh-mysql56/root/usr/bin',
+      '/opt/rh/rh-mysql56/root/usr/libexec',
+      '/opt/rh/rh-mariadb102/root/usr/bin',
+      '/opt/rh/rh-mariadb102/root/usr/libexec',
+      '/opt/rh/rh-mariadb101/root/usr/bin',
+      '/opt/rh/rh-mariadb101/root/usr/libexec',
+      '/opt/rh/rh-mariadb100/root/usr/bin',
+      '/opt/rh/rh-mariadb100/root/usr/libexec',
+      '/opt/rh/mysql55/root/usr/bin',
+      '/opt/rh/mysql55/root/usr/libexec',
+      '/opt/rh/mariadb55/root/usr/bin',
+      '/opt/rh/mariadb55/root/usr/libexec',
+      '/usr/mysql/5.5/bin',
+      '/usr/mysql/5.6/bin',
+      '/usr/mysql/5.7/bin',
+  ].join(':')
 
   # rubocop:disable Style/HashSyntax
   commands :mysql_raw  => 'mysql'
