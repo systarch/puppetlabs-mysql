@@ -21,6 +21,8 @@ class Puppet::Provider::Mysql < Puppet::Provider
     '/opt/rh/rh-mariadb102/root/usr/lib64',
     '/opt/rh/rh-mariadb103/root/usr/lib',
     '/opt/rh/rh-mariadb103/root/usr/lib64',
+    '/opt/rh/rh-mariadb104/root/usr/lib',
+    '/opt/rh/rh-mariadb104/root/usr/lib64',
     '/opt/rh/mysql55/root/usr/lib',
     '/opt/rh/mysql55/root/usr/lib64',
     '/opt/rh/mariadb55/root/usr/lib',
