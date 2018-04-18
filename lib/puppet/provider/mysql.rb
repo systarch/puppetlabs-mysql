@@ -85,33 +85,15 @@ class Puppet::Provider::Mysql < Puppet::Provider
     self.class.newer_than(forks_versions)
   end
 
-  def self.older_than(forks_versions)
-    forks_versions.keys.include?(mysqld_type) && Puppet::Util::Package.versioncmp(mysqld_version, forks_versions[mysqld_type]) < 0
-  end
-
-  def older_than(forks_versions)
-    self.class.older_than(forks_versions)
-  end
-
   def defaults_file
     self.class.defaults_file
   end
 
   def self.mysql_caller(text_of_sql, type)
     if type.eql? 'system'
-      if File.file?("#{Facter.value(:root_home)}/.mylogin.cnf")
-        ENV['MYSQL_TEST_LOGIN_FILE'] = "#{Facter.value(:root_home)}/.mylogin.cnf"
-        mysql_raw([system_database, '-e', text_of_sql].flatten.compact).scrub
-      else
-        mysql_raw([defaults_file, system_database, '-e', text_of_sql].flatten.compact).scrub
-      end
+      mysql_raw([defaults_file, system_database, '-e', text_of_sql].flatten.compact)
     elsif type.eql? 'regular'
-      if File.file?("#{Facter.value(:root_home)}/.mylogin.cnf")
-        ENV['MYSQL_TEST_LOGIN_FILE'] = "#{Facter.value(:root_home)}/.mylogin.cnf"
-        mysql_raw(['-NBe', text_of_sql].flatten.compact).scrub
-      else
-        mysql_raw([defaults_file, '-NBe', text_of_sql].flatten.compact).scrub
-      end
+      mysql_raw([defaults_file, '-NBe', text_of_sql].flatten.compact)
     else
       raise Puppet::Error, _("#mysql_caller: Unrecognised type '%{type}'" % { type: type })
     end
@@ -131,9 +113,8 @@ class Puppet::Provider::Mysql < Puppet::Provider
   end
 
   # Take root@localhost and munge it to 'root'@'localhost'
-  # Take root@id123@localhost and munge it to 'root@id123'@'localhost'
   def self.cmd_user(user)
-    "'#{user.reverse.sub('@', "'@'").reverse}'"
+    "'#{user.sub('@', "'@'")}'"
   end
 
   # Take root.* and return ON `root`.*
